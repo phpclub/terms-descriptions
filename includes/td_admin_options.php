@@ -142,6 +142,16 @@ class TD_Admin_Options {
                         <span class="description"><?php _e( 'If this option is checked plugin will add target="_blank" to links.', TD_TEXTDOMAIN ); ?></span>
                     </td>
                 </tr>
+
+                <tr valign="middle">
+                    <th scope="row"><?php _e( 'Use cache', TD_TEXTDOMAIN ); ?></th>
+                    <td>
+                        <input name="td_options[use_cache]" type="checkbox" id="use_cache" <?php if ( isset( $options[ 'use_cache' ] ) ) { checked( $options[ 'use_cache' ], 'on' ); } ?> />
+                        <span class="description"><?php _e( 'Use cache (memcache)', TD_TEXTDOMAIN ); ?></span>
+                    </td>
+                </tr>
+
+
                 <tr valign="middle">
                     <th scope="row"><?php _e( 'Add nofollow to external links', TD_TEXTDOMAIN ); ?></th>
                     <td>
@@ -165,7 +175,7 @@ class TD_Admin_Options {
                         <p class="description"><?php _e( '<strong>Use this option with care</strong>. In most cases the default set of tags will be enough.', TD_TEXTDOMAIN ) ?></p>
                     </td>
                 </tr>
-                <tr valign="middle">
+                 <tr valign="middle">
                     <th scope="row"><?php _e( 'Show', TD_TEXTDOMAIN ); ?></th>
                     <td>
                         <select name="td_options[terms_per_page]" id="terms_per_page">
@@ -272,6 +282,9 @@ class TD_Admin_Options {
         if ( !isset( $input[ 'skip_tags' ] ) ) {
             $input[ 'skip_tags' ] = '';
         }
+		if ( !isset( $input[ 'use_cache' ] ) ) {
+			$input[ 'use_cache' ] = false;
+		}
         if ( false !== $old_options ) {
             return array_merge( $old_options, $input );
         }

@@ -58,6 +58,23 @@ class TD_Frontend {
             }
             //getting the terms
             $terms = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'td_terms ORDER BY t_id DESC', ARRAY_A );
+
+            if ( 'on' === $this->options->getOption( 'use_cache' ) ) {
+				//TODO if use - make md5 from $terms & $content
+				$terms_key = md5($terms);
+				$content_key= md5($content);
+				$memcache = new Memcache;
+				$memcache->connect('localhost', 11211);
+				$cached_terms =  $memcache->get('td_cache_terms_'.$terms_key);
+                if ($cached_terms == $terms_key) {
+                	// Terms not change - get from cache content
+					$cached =  $memcache->get('td_cache_'.$content_key);
+					if ($cached) {
+						return $cached;
+					}
+				}
+			}
+
             //setting up parser
             $parser->set_terms( $terms );
             $parser->add_skip_tags( $this->options->getOption( 'skip_tags' ) );
@@ -73,10 +90,15 @@ class TD_Frontend {
             }
 
             //replacing terms
-            return $parser->parse( $content, $this->options->getOption( 'convert_first_n_terms' ), $this->options->getOption( 'class' )
+            $ret = $parser->parse( $content, $this->options->getOption( 'convert_first_n_terms' ), $this->options->getOption( 'class' )
                     , ( int )$this->options->getOption( 'convert_total' ), $this->options->getOption( 'show_title' )
                     , $this->options->getOption( 'text_before' ), $this->options->getOption( 'text_after' ), $target, $consider_existing_links
                     , $this->options->getOption( 'add_nofollow' ), $this->options->getOption( 'add_noindex' ) );
+			if ( 'on' === $this->options->getOption( 'use_cache' ) ) {
+				$memcache->set('td_cache_'.$content_key, $ret,false,86400);
+				$memcache->set('td_cache_terms_'.$terms_key, $terms_key, false, 86400);
+			}
+            return $ret;
         }
         else {
             return $content;

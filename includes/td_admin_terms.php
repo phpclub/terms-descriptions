@@ -23,6 +23,7 @@ class TD_Admin_Terms {
                 'show_before' => '',
                 'show_after' => '',
                 'skip_tags' => '',
+                'use_cache' => false,
             );
     private $terms_ids = array();
 

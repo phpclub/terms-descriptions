@@ -31,6 +31,9 @@ class TD_Options {
 		if ( !isset( $this->options[ 'skip_tags' ] ) ) {
 			$this->options[ 'skip_tags' ] = '';
 		}
+		if ( !isset( $this->options[ 'use_cache' ] ) ) {
+			$this->options[ 'use_cache' ] = '';
+		}
 	}
 
 	public function getOption( $name ) {
